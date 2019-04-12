@@ -1,6 +1,7 @@
 import * as THREE from "three";
-// Import module
 import * as OrbitControls from "three-orbitcontrols";
+import { getPointLight, getPointLightCyan } from "./lights";
+import { getBackground } from "./background";
 
 // create a scene
 const scene = new THREE.Scene();
@@ -12,10 +13,7 @@ const box = new THREE.Mesh(geometry, material);
 scene.add(box);
 
 // add some light
-const light = new THREE.PointLight(0xffabba);
-light.position.set(10, 10, 35);
-light.intensity = 2;
-scene.add(light);
+scene.add(getPointLight());
 
 // create a camera and set position
 const camera = new THREE.PerspectiveCamera(
@@ -24,7 +22,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.z = 100;
+camera.position.z = 50;
 
 // create a renderer & add to DOM
 const renderer = new THREE.WebGLRenderer();
@@ -62,3 +60,10 @@ controls.screenSpacePanning = false;
 controls.minDistance = 10;
 controls.maxDistance = 100;
 controls.maxPolarAngle = Math.PI / 2;
+
+//add lights
+scene.add(getPointLight());
+scene.add(getPointLightCyan());
+
+//add background
+scene.add(getBackground());
