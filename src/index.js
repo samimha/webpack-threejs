@@ -1,18 +1,25 @@
 import * as THREE from "three";
 import * as OrbitControls from "three-orbitcontrols";
-import { getPointLight, getPointLightCyan } from "./lights";
-import { getBackground } from "./background";
+import { getPointLight } from "./lights";
+import { getHangarBackground } from "./background";
 
 // create a scene
 const scene = new THREE.Scene();
 
 // create a box
 const geometry = new THREE.BoxGeometry(10, 20, 30);
-const material = new THREE.MeshPhongMaterial({
-  color: 0x222222,
-  shininess: 0
+
+// Create cube camera
+var cubeCamera = new THREE.CubeCamera(1, 100000, 128);
+scene.add(cubeCamera);
+
+// Create chrome Material
+var chromeMaterial = new THREE.MeshLambertMaterial({
+  color: 0xffffff,
+  envMap: cubeCamera.renderTarget.texture
 });
-const box = new THREE.Mesh(geometry, material);
+
+const box = new THREE.Mesh(geometry, chromeMaterial);
 scene.add(box);
 
 // create a camera and set position
@@ -35,6 +42,14 @@ const render = () => {
   box.rotation.x += 0.02;
   box.rotation.y += 0.03;
   box.rotation.z += 0.05;
+
+  // Update the render target cube
+  box.visible = false;
+  cubeCamera.position.copy(box.position);
+  cubeCamera.update(renderer, scene);
+
+  // Render the scene
+  box.visible = true;
   renderer.render(scene, camera);
 };
 render();
@@ -62,18 +77,20 @@ controls.maxDistance = 100;
 controls.maxPolarAngle = Math.PI / 2;
 
 //add lights
-scene.add(getPointLight());
-scene.add(getPointLightCyan());
+const light = getPointLight();
+const light2 = getPointLight();
+light2.position.set(-10, -10, -35);
+scene.add(light, light2);
 
 //add background
-const galaxy = getBackground();
+const hangar = getHangarBackground();
 
-scene.add(galaxy);
+scene.add(hangar);
 
 var animate = function() {
   requestAnimationFrame(animate);
 
-  galaxy.rotation.y += 0.0005;
+  hangar.rotation.y += 0.0005;
 
   renderer.render(scene, camera);
 };
