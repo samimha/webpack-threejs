@@ -8,12 +8,12 @@ const scene = new THREE.Scene();
 
 // create a box
 const geometry = new THREE.BoxGeometry(10, 20, 30);
-const material = new THREE.MeshLambertMaterial({ color: 0x0000ab });
+const material = new THREE.MeshPhongMaterial({
+  color: 0x222222,
+  shininess: 0
+});
 const box = new THREE.Mesh(geometry, material);
 scene.add(box);
-
-// add some light
-scene.add(getPointLight());
 
 // create a camera and set position
 const camera = new THREE.PerspectiveCamera(
@@ -66,4 +66,16 @@ scene.add(getPointLight());
 scene.add(getPointLightCyan());
 
 //add background
-scene.add(getBackground());
+const galaxy = getBackground();
+
+scene.add(galaxy);
+
+var animate = function() {
+  requestAnimationFrame(animate);
+
+  galaxy.rotation.y += 0.0005;
+
+  renderer.render(scene, camera);
+};
+
+animate();
